@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask_login import LoginManager
 from .methods import mine_block
+
 import sys
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -11,21 +12,18 @@ from .blockchain import Blockchain
 
 blockchain = Blockchain()
 blockchain1 = Blockchain()
-# blockchain2 = Blockchain()
-# blockchain3 = Blockchain()
+
 
 mine_block(blockchain, 0,"Ellen Geller", "10.10.1990", "zapalenie stawów","covid")
 mine_block(blockchain1, 1, "John Silva", "01.01.1980", "brak", "brak")
-# mine_block(blockchain2, 2, "Sunny Street 101", "James Bond", "medium")
-# mine_block(blockchain3, 3, "Garden Street 90", "Harrison Capybara", "excellent")
-#
 
-blocks = [blockchain, blockchain1] #, blockchain2, blockchain3]
+
+blocks = [blockchain, blockchain1]
 for b in blocks:
     b.add_node("http://127.0.0.1:5000")
     b.add_node("http://127.0.0.1:5001")
-    #b.add_node("http://127.0.0.1:5002")
-    #b.add_node("http://127.0.0.1:5003")
+    b.add_node("http://127.0.0.1:5002")
+    b.add_node("http://127.0.0.1:5003")
 
 def create_app():
     app = Flask(__name__)
@@ -51,5 +49,11 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
+
+
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
+
 
     return app

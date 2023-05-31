@@ -1,19 +1,20 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify
 from .models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import qrcode
+from . import db
 import secrets
 auth = Blueprint("auth", __name__)
 salt = str(secrets.token_urlsafe(10))
 pepper = "M"
-
+from flask import session
 
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
     session.permanent = True
-    #Creating user - use this code only once
-    # new_user = User(username="a", password=generate_password_hash(f'{salt}12345{pepper}', method='sha256'), otp=False, salt = salt, role= "A")
+    # Creating user - use this code only once
+    # new_user = User(username="a", password=generate_password_hash(f'{salt}12345{pepper}', method='sha256'), role= 'A', otp=False , salt = salt)
     # db.session.add(new_user)
     # db.session.commit()
     # login_user(new_user, remember=True)
@@ -36,6 +37,7 @@ def login():
                     return redirect(url_for('auth.two_factor_setup'))
                     #return redirect(url_for('views.home'))
                 else:
+                    print("zle haslo")
                     flash('Password is incorrect.', category='error')
             else:
                 otp = request.form.get("otp")
@@ -48,6 +50,7 @@ def login():
 
         else:
             flash('Username does not exist.', category='error')
+            print('nie ma tego username')
 
     return render_template("login.html", user=current_user)
 
@@ -73,8 +76,8 @@ def qr():
     user = current_user
     print(user)
     # render qrcode for FreeTOTP
-    # url = qrcode.make(user.get_totp_uri())
-    # qrcode.make(user.get_totp_uri()).save("website/code.png")
+    url = qrcode.make(user.get_totp_uri())
+    qrcode.make(user.get_totp_uri()).save("website/code.png")
     # stream = BytesIO()
     # url.svg(stream, scale=5)
     #return stream.getvalue(), 200
@@ -84,4 +87,5 @@ def qr():
 def check_otp():
     if request.method == 'POST':
         otp = request.form.get("otp")
+
 

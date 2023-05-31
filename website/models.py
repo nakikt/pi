@@ -9,10 +9,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
-    otp = db.Column(db.Boolean, nullable=False)
     role = db.Column(db.String(1))
+    otp = db.Column(db.Boolean, nullable=False)
     otp_secret = db.Column(db.String(16))
     salt = db.Column(db.String(10))
+    blockchain_id = db.Column(db.Integer)
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)

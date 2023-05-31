@@ -22,3 +22,4 @@ def mine_block(blockchain, id, name_surname, birth_date, diseases, vaccinations)
 
 
 
+
