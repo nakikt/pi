@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<table>
+
+<tr>
+    <th> ID </th>
+      <th> ip  </th>
+      <th> is_alive</th>
+      <th> username </th>
+
+</tr>
+{% for row in hosts %}
+    <tr>
+        <td> {{row.ip}}</td>
+        <td> {{row.is_alive}}</td>
+         <td> {{row.username}}</td>
+        <td>
+            <a href = "/delete/{{row.id}}" >Delete</a>
+        </td>
+    </tr>
+
+    {% endfor %}
+</table>
+
+{% endblock %}
